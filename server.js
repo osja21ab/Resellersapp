@@ -105,6 +105,11 @@ app.delete('/delete', async (req, res) => {
   res.status(200).send({ success: true });
 });
 
+app.delete('/admindelete', async (req, res) => {
+  await sql.query(`DELETE FROM Account WHERE Email = '${req.body.email}'`);
+  res.status(200).send({ success: true });
+});
+
 app.put('/update', async (req, res) => {
   await sql.query(`UPDATE Account SET Email = '${req.body.email}', Password = ${req.body.password}`);
   res.status(200).send({ success: true });
