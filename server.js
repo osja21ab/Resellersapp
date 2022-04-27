@@ -61,9 +61,29 @@ app.get('/updateproduct/:Idproduct', (req, res) => {
   res.sendFile(path.join(__dirname, './public/updateproduct.html'));
 });
 
-app.get('/products/:category', async (req, res) => {
+app.post('/products/:category', async (req, res) => {
   //Fetch all products with specific category id
-  let categories = await sql.query(`select product.*, Account.Gold from Account INNER JOIN product ON Account.Id = product.User_id where category_id = ${req.params.category}`);
+  let query = `select product.*, Account.Gold, Quality.Condition from product INNER JOIN Account ON product.User_id = Account.Id INNER JOIN Quality ON product.Quality_id = Quality.Id where category_id = ${req.params.category}`;
+  if (req.body.city) {
+    query += " AND City = '" + req.body.city + "'";
+  }
+  if (req.body.daysold) {
+    var d = new Date();
+    d.setDate(d.getDate() - req.body.daysold);
+    query += " AND Created > '" + d.toISOString().substring(0, 10) + "'";
+    console.log(query);
+  }
+  if (req.body.fromprice) {
+    query += " AND Price >= '" + req.body.fromprice + "'";
+  }
+  if (req.body.toprice) {
+    query += " AND Price <= '" + req.body.toprice + "'";
+  }
+  if (req.body.quality_id) {
+    query += " AND Quality_id = " + req.body.quality_id;
+  }
+
+  let categories = await sql.query(query);
   let items = [];
   for (let item of categories.recordset) {
     if (item.Gold) {
