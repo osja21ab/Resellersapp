@@ -33,6 +33,14 @@ app.get('/updateUser', (req, res) => {
   res.sendFile(path.join(__dirname, './public/updateUser.html'));
 });
 
+app.get('/adminupdateuser', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/adminupdateuser.html'));
+});
+
+app.get('/admindeleteuser', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/admindeleteuser.html'));
+});
+
 app.get('/home', (req, res) => {
   res.sendFile(path.join(__dirname, './public/home.html'));
 });
@@ -57,7 +65,7 @@ app.get('/products/:category', async (req, res) => {
 
 app.post('/updateproduct', async (req, res) => {
   //Update the product with the given data, by the given product id.
-  await sql.query('update Product SET Category_id = ' + req.body.category_id + ', User_id = ' + req.body.user_id + ', Quality_id = ' + req.body.quality_id + ', Price = ' + req.body.price + ", Title = '" + req.body.title + "', PictureUrl = '" + req.body.pictureUrl + "' WHERE Id = " + req.body.id)
+  await sql.query('update Product SET Category_id = ' + req.body.category_id + ', User_id = ' + req.body.user_id + ', Quality_id = ' + req.body.quality_id + ', Price = ' + req.body.price + ", Title = '" + req.body.title + "', PictureUrl = '" + req.body.pictureUrl + "', City = '" + req.body.city + "'WHERE Id = " + req.body.id)
   res.status(200).send(req.body); //Return the given data
 });
 
@@ -73,7 +81,7 @@ app.post('/registration', async (req, res) => {
 
 //produkt
 app.post('/product', async (req, res) => {
-  await sql.query(`INSERT INTO Product (Category_id, Price, User_id, Title, Quality_id, PictureUrl) VALUES (${req.body.category_id}, ${req.body.price}, ${req.body.user_id}, '${req.body.title}', ${req.body.quality_id}, '${req.body.pictureUrl}')`)
+  await sql.query(`INSERT INTO Product (Category_id, Price, User_id, Title, Quality_id, PictureUrl, City, Created) VALUES (${req.body.category_id}, ${req.body.price}, ${req.body.user_id}, '${req.body.title}', ${req.body.quality_id}, '${req.body.pictureUrl}', '${req.body.city}', '${new Date().toISOString()}')`)
   res.status(200).send({ success: true });
 });
 
@@ -84,11 +92,8 @@ WHERE (Account.Id = '${req.params.userId}')`)
 });
 
 app.post('/login', async (req, res) => {
-  console.log(req.body);
   let users = await sql.query(`select * from Account WHERE Email = '${req.body.email}' AND Password = '${req.body.password}'`);
-  console.log("test");
   if (users.recordset.length) {
-    console.log(req.body);
     res.status(200).send(users.recordset[0]);
   } else {
     res.status(401).send("Unauthorized");
@@ -102,6 +107,12 @@ app.delete('/delete', async (req, res) => {
 
 app.put('/update', async (req, res) => {
   await sql.query(`UPDATE Account SET Email = '${req.body.email}', Password = ${req.body.password}`);
+  res.status(200).send({ success: true });
+});
+
+app.put('/adminupdate', async (req, res) => {
+  //Updates the user via the admin interface. Gold uses short hand if condition ? true : false
+  await sql.query(`UPDATE Account SET Status_id = ${req.body.status_id}, Gold = ${req.body.gold ? 1 : 0} WHERE Email = '${req.body.email}'`);
   res.status(200).send({ success: true });
 });
 
