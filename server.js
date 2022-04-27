@@ -49,6 +49,10 @@ app.get('/product', (req, res) => {
   res.sendFile(path.join(__dirname, './public/product.html'));
 });
 
+app.get('/brugsstatistikker', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/brugsstatistikker.html'));
+});
+
 app.get('/deleteuser', (req, res) => {
   res.sendFile(path.join(__dirname, './public/deleteuser.html'));
 });
@@ -74,6 +78,12 @@ app.get('/products/:category', async (req, res) => {
   }
 
   res.status(200).json(items); //Return recordset of sql query
+});
+
+app.get('/products', async (req, res) => {
+  //Fetch all products with specific category id
+  let products = await sql.query(`select product.*, Account.Email from Account INNER JOIN product ON Account.Id = product.User_id`);
+  res.status(200).json(products.recordset); //Return recordset of sql query
 });
 
 app.post('/updateproduct', async (req, res) => {
