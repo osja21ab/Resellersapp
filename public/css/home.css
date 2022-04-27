@@ -1,0 +1,35 @@
+
+#title {
+background-color: #000a8c;
+color: #fff;
+}
+
+
+.navbar-brand {
+font-weight: bold;
+font-size: 2rem;
+padding-left: 2%;
+padding-right: 2%;
+color: #fff;
+}
+
+.nav-link {
+color: #fff;
+}
+
+.container-fluid {
+padding: 3% 5% 3% 2%;
+}
+h2 {
+  padding-left: 2%;
+}
+
+#productSection {
+  padding: 2%;
+  position: relative;
+}
+
+label{
+padding-bottom:5px;
+}
+

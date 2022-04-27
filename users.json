@@ -1,0 +1,38 @@
+[
+    {
+        "email": "random@live.dk",
+        "password": "123"
+    },
+    {
+        "email": "test@test.dk",
+        "password": "test"
+    },
+    {
+        "email": "oskar1@live.dk",
+        "password": "123"
+    },
+    {
+        "email": "oskar@test.dk",
+        "password": "1234"
+    },
+    {
+        "email": "hello@there.dk",
+        "password": "123"
+    },
+    {
+        "email": "oskar@live.dk",
+        "password": "123"
+    },
+    {
+        "email": "oskar5@live.dk",
+        "password": "123"
+    },
+    {
+        "email": "oskar4@live.dk",
+        "password": "123"
+    },
+    {
+    "email": "oskar1@live.d7",
+        "password": "123"
+    }
+]

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>product salg</title>
+  <link href="https://fonts.googleapis.com/css?family=Gelasio&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/home.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+    integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+    integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+    crossorigin="anonymous"></script>
+  <style>
+    #mylink {
+      font-size: 25px;
+    }
+  </style>
+</head>
+
+<body align="center">
+  <section id="title">
+    <nav class="navbar navbar-expand-lg">
+      <a class="navbar-brand" href="home">Resellers</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="home">Hjem <span class="sr-only"></span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="user">Profil</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="product">Opret Produkt</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </section>
+
+  <section>
+    <div align="center" class="container-fluid">
+      <br>
+      <h2>Opret et produkt</h2>
+      <form id="produktform" action="/action_page.php">
+        <div class="form-group" align="center">
+          <label for="product">Sælg</label>
+          <input style="width: 20%" type="product" id="product" name="product" placeholder="produkt"
+            class="form-control" required />
+        </div>
+        <div class="form-group" align="center">
+          <label for="pris">Pris</label>
+          <input style="width: 20%" type="number" id="price" name="pris" placeholder="kr" class="form-control" required />
+        </div>
+        <div class="form-group" align="center">
+          <label for="pictureUrl">Billede url</label>
+          <input style="width: 20%" type="text" id="pictureUrl" name="pictureUrl" placeholder="billede url"
+            class="form-control" required />
+        </div>
+        <br>
+        <label>Kategori</label>
+        <select name="category" id="category">
+          <option value="2">Tøj</option>
+          <option value="3">Elektronik</option>
+          <option value="1">Møbler</option>
+        </select>
+        <br>
+        <label>Kvalitet</label>
+        <select name="quality" id="quality">
+          <option value="1">Ny</option>
+          <option value="2">Brugt - som ny</option>
+          <option value="3">Brugt - god</option>
+          <option value="4">Brugt - nogenlunde</option>
+        </select>
+        <br><br>
+        <button type="submit" class="btn btn-primary">sæt til salg</button>
+      </form>
+    </div>
+  </section>
+
+  <script>
+
+    document.getElementById('produktform').addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const productList = {
+        title: document.getElementById('product').value,
+        category_id: document.getElementById('category').value,
+        price: document.getElementById('price').value,
+        pictureUrl: document.getElementById('pictureUrl').value,
+        user_id: JSON.parse(localStorage.getItem('user')).Id,
+        quality_id: document.getElementById('quality').value
+      };
+
+      fetch('http://localhost:3000/product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productList),
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response) {
+            window.alert(`Din '${productList.title}' er nu til salg`);
+          }
+        });
+    });
+  </script>
+</body>
+</body>
+
+</html>
