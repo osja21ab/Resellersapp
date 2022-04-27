@@ -38,12 +38,12 @@ window.addEventListener('DOMContentLoaded', (event) => {
     .catch(function (error) {
       console.log(error);
     });
-});
 
-document.getElementById('logoutForm').addEventListener('submit', (event) => {
-  event.preventDefault();
-  localStorage.removeItem('user');
-  location.href = '/login';
+  document.getElementById('logoutBtn').addEventListener('click', (event) => {
+    event.preventDefault();
+    localStorage.removeItem('user');
+    location.href = '/login';
+  });
 });
 
 function updateProduct(Idproduct) {
