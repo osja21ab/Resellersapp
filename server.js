@@ -59,8 +59,21 @@ app.get('/updateproduct/:Idproduct', (req, res) => {
 
 app.get('/products/:category', async (req, res) => {
   //Fetch all products with specific category id
-  let categories = await sql.query('select * from Product where category_id = ' + req.params.category)
-  res.status(200).json(categories.recordset); //Return recordset of sql query
+  let categories = await sql.query(`select product.*, Account.Gold from Account INNER JOIN product ON Account.Id = product.User_id where category_id = ${req.params.category}`);
+  let items = [];
+  for (let item of categories.recordset) {
+    if (item.Gold) {
+      items.push(item);
+    }
+  }
+
+  for (let item of categories.recordset) {
+    if (!item.Gold) {
+      items.push(item);
+    }
+  }
+
+  res.status(200).json(items); //Return recordset of sql query
 });
 
 app.post('/updateproduct', async (req, res) => {

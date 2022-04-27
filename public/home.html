@@ -55,10 +55,9 @@
     </div>
   </section>
 
-  <section>
-    <div class="container-fluid">
-      <div id="products"></div>
-    </div>
+  <section id="productSection">
+
+    <div class="row" id="products"> </div>
   </section>
   <script>
     document.getElementById('category').addEventListener('change', (e) => {
@@ -73,12 +72,15 @@
         .then(function (data) {
           const productshtml = document.getElementById('products');
           let producthtml = '';
-          console.log(data);
           for (let product in data) {
-            producthtml += `<div id="product" class="p-${product.Id}">`;
-            producthtml += `<h3>${data[product].Title}</h3>`;
-            producthtml += `<p>${data[product].Price} kr</p>`;
+            producthtml += `<div id="productitem" class="p-${product.Id} me-2">`;
+            producthtml += `<h3 class="mb-0">${data[product].Title}</h3>`;
+            producthtml += `<p class="mb-0">${data[product].Price} kr</p>`;
+            producthtml += `<p class="mb-0">${data[product].City}</p>`;
             producthtml += `<img src="${data[product].PictureUrl}" style='max-width: 200px; max-height: 200px' />`;
+            if (data[product].Gold) {
+              producthtml += `<div><small>Guld annonce</small></div>`;
+            }
             producthtml += `</div>`;
           }
           productshtml.innerHTML = producthtml;

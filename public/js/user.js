@@ -44,6 +44,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     localStorage.removeItem('user');
     location.href = '/login';
   });
+
 });
 
 function updateProduct(Idproduct) {
