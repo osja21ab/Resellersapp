@@ -81,6 +81,7 @@
             if (data[product].Gold) {
               producthtml += `<div><small>Guld annonce</small></div>`;
             }
+            producthtml += `<div><button class="btn btn-success">Køb</button> <button class="btn btn-info" onclick="followProduct(${data[product].Id})">Følg</button></div>`;
             producthtml += `</div>`;
           }
           productshtml.innerHTML = producthtml;
@@ -89,6 +90,26 @@
           console.log(error);
         });
     });
+
+    function followProduct(productId) {
+      let userId = JSON.parse(localStorage.getItem('user')).Id;
+
+      fetch("http://localhost:3000/followProduct", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+
+        },
+        body: JSON.stringify({ userId: userId, productId: productId })
+      })
+        .then((response) => response.text())
+        .then((response) => {
+          alert("Du har nu fulgt dette produkt")
+        })
+        .catch(() => {
+          window.alert("produktet kunne ikke følges")
+        });
+    }
   </script>
 </body>
 
