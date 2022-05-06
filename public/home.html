@@ -94,7 +94,7 @@
     });
 
     function search() {
-
+      //Sender request til serveren med alle paramtere (om end de er udfyldt eller ej)
       fetch('/products/' + document.getElementById('category').value, {
         method: 'POST',
         headers: {

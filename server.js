@@ -2,7 +2,6 @@
 const express = require('express');
 const { request } = require('http');
 const path = require('path');
-const data = require('./data');
 const app = express();
 const sql = require('mssql');
 var uniqid = require('uniqid');
@@ -70,20 +69,22 @@ app.post('/products/:category', async (req, res) => {
   if (req.body.daysold) {
     var d = new Date();
     d.setDate(d.getDate() - req.body.daysold);
+    //Laver dato om fra datetime format til date format. Eks: fra 2022-04-27T12:08:01.971Z til 2022-04-27
     query += " AND Created > '" + d.toISOString().substring(0, 10) + "'";
-    console.log(query);
   }
   if (req.body.fromprice) {
-    query += " AND Price >= '" + req.body.fromprice + "'";
+    query += " AND Price >= " + req.body.fromprice;
   }
   if (req.body.toprice) {
-    query += " AND Price <= '" + req.body.toprice + "'";
+    query += " AND Price <= " + req.body.toprice;
   }
   if (req.body.quality_id) {
     query += " AND Quality_id = " + req.body.quality_id;
   }
 
   let categories = await sql.query(query);
+
+  //Sortering så gold annoncer er øverst.
   let items = [];
   for (let item of categories.recordset) {
     if (item.Gold) {
