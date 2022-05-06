@@ -71,6 +71,7 @@
 
                     const userProductshtml = document.getElementById('userProducts');
                     let userhtml = '';
+                    //Get key of the key:value pair Userproducts. Example oskar.emil@hej.dk:5 key = oskar.emil, value = 5
                     for (let userProduct of Object.keys(userProducts)) {
                         userhtml += `<div id="productitem">`;
                         userhtml += `<p class="mb-0">${userProduct} - ${userProducts[userProduct]} annoncer</p>`;

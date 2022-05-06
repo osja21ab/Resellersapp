@@ -2,7 +2,6 @@
 const express = require('express');
 const { request } = require('http');
 const path = require('path');
-const data = require('./data');
 const app = express();
 const sql = require('mssql');
 var uniqid = require('uniqid');
@@ -61,9 +60,31 @@ app.get('/updateproduct/:Idproduct', (req, res) => {
   res.sendFile(path.join(__dirname, './public/updateproduct.html'));
 });
 
-app.get('/products/:category', async (req, res) => {
+app.post('/products/:category', async (req, res) => {
   //Fetch all products with specific category id
-  let categories = await sql.query(`select product.*, Account.Gold from Account INNER JOIN product ON Account.Id = product.User_id where category_id = ${req.params.category}`);
+  let query = `select product.*, Account.Gold, Quality.Condition from product INNER JOIN Account ON product.User_id = Account.Id INNER JOIN Quality ON product.Quality_id = Quality.Id where category_id = ${req.params.category}`;
+  if (req.body.city) {
+    query += " AND City = '" + req.body.city + "'";
+  }
+  if (req.body.daysold) {
+    var d = new Date();
+    d.setDate(d.getDate() - req.body.daysold);
+    //Laver dato om fra datetime format til date format. Eks: fra 2022-04-27T12:08:01.971Z til 2022-04-27
+    query += " AND Created > '" + d.toISOString().substring(0, 10) + "'";
+  }
+  if (req.body.fromprice) {
+    query += " AND Price >= " + req.body.fromprice;
+  }
+  if (req.body.toprice) {
+    query += " AND Price <= " + req.body.toprice;
+  }
+  if (req.body.quality_id) {
+    query += " AND Quality_id = " + req.body.quality_id;
+  }
+
+  let categories = await sql.query(query);
+
+  //Sortering så gold annoncer er øverst.
   let items = [];
   for (let item of categories.recordset) {
     if (item.Gold) {
@@ -86,10 +107,25 @@ app.get('/products', async (req, res) => {
   res.status(200).json(products.recordset); //Return recordset of sql query
 });
 
+app.get('/followedproducts/:userId', async (req, res) => {
+  //Fetch all followed products for the specified userid
+  let products = await sql.query(`SELECT product.* FROM ProductFollow INNER JOIN product ON ProductFollow.Product_id = product.Id WHERE ProductFollow.User_id = ${req.params.userId}`);
+  res.status(200).json(products.recordset); //Return recordset of sql query
+});
+
 app.post('/updateproduct', async (req, res) => {
   //Update the product with the given data, by the given product id.
   await sql.query('update Product SET Category_id = ' + req.body.category_id + ', User_id = ' + req.body.user_id + ', Quality_id = ' + req.body.quality_id + ', Price = ' + req.body.price + ", Title = '" + req.body.title + "', PictureUrl = '" + req.body.pictureUrl + "', City = '" + req.body.city + "'WHERE Id = " + req.body.id)
   res.status(200).send(req.body); //Return the given data
+});
+
+app.post('/followProduct', async (req, res) => {
+  //Tjek om brugeren allerede følger produktet. Hvis ikke, indsæt i databasen.
+  let checkIfPresent = await sql.query(`SELECT * FROM ProductFollow WHERE User_id = ${req.body.userId} AND Product_id = ${req.body.productId}`)
+  if (!checkIfPresent.recordset.length) {
+    await sql.query(`INSERT INTO ProductFollow (User_id, Product_id) VALUES (${req.body.userId}, ${req.body.productId})`)
+  }
+  res.status(200).send({ success: true }); //Return the given data
 });
 
 app.delete('/deleteProduct', async (req, res) => {
