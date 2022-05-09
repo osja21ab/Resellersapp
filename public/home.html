@@ -42,16 +42,45 @@
       </div>
     </nav>
   </section>
-  <section id="category">
-    <div class="container-fluid">
-      <form id="searchform">
-        <h2>Kategori</h2>
-        <select class="form-select form-select-lg" style="width: 10%" name="category" id="category">
+  <section>
+    <div class="container-fluid d-flex pb-1">
+      <div>
+        <h4>Kategori</h4>
+        <select class="form-select form-select" style="width: 100%" name="category" id="category">
           <option value="2">Tøj</option>
           <option value="3">Elektronik</option>
           <option value="1">Møbler</option>
         </select>
-      </form>
+      </div>
+      <div>
+        <h4>By/Lokation</h4>
+        <input type="text" id="city" name="city" placeholder="lokation" class="form-control" required />
+      </div>
+      <div>
+        <h4>Dage gammel</h4>
+        <input type="number" id="daysold" name="daysold" placeholder="X Dage gammel" class="form-control" required />
+      </div>
+      <div>
+        <h4>Fra Pris</h4>
+        <input type="number" id="fromprice" name="fromprice" placeholder="fra pris" class="form-control" required />
+      </div>
+      <div>
+        <h4>Til Pris</h4>
+        <input type="number" id="toprice" name="toprice" placeholder="til pris" class="form-control" required />
+      </div>
+      <div>
+        <h4>Kvalitet</h4>
+        <select class="form-select form-select" style="width: 100%" name="quality" id="quality">
+          <option value="">Alle</option>
+          <option value="1">Ny</option>
+          <option value="2">Brugt - som ny</option>
+          <option value="3">Brugt - god</option>
+          <option value="4">Brugt - nogenlunde</option>
+        </select>
+      </div>
+    </div>
+    <div class="container-fluid pt-0">
+      <button class="btn btn-info" onclick="search()">Søg</button>
     </div>
   </section>
 
@@ -61,7 +90,25 @@
   </section>
   <script>
     document.getElementById('category').addEventListener('change', (e) => {
-      fetch('/products/' + e.target.value, { method: 'GET' })
+      search();
+    });
+
+    function search() {
+      //Sender request til serveren med alle paramtere (om end de er udfyldt eller ej)
+      fetch('/products/' + document.getElementById('category').value, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+
+        },
+        body: JSON.stringify({
+          city: document.getElementById('city').value,
+          daysold: document.getElementById('daysold').value,
+          fromprice: document.getElementById('fromprice').value,
+          toprice: document.getElementById('toprice').value,
+          quality_id: document.getElementById('quality').value
+        })
+      })
         .then(function (response) {
           if (response.ok) {
             console.log(response);
@@ -77,6 +124,7 @@
             producthtml += `<h3 class="mb-0">${data[product].Title}</h3>`;
             producthtml += `<p class="mb-0">${data[product].Price} kr</p>`;
             producthtml += `<p class="mb-0">${data[product].City}</p>`;
+            producthtml += `<p class="mb-0">${data[product].Condition}</p>`;
             producthtml += `<img src="${data[product].PictureUrl}" style='max-width: 200px; max-height: 200px' />`;
             if (data[product].Gold) {
               producthtml += `<div><small>Guld annonce</small></div>`;
@@ -89,7 +137,7 @@
         .catch(function (error) {
           console.log(error);
         });
-    });
+    }
 
     function followProduct(productId) {
       let userId = JSON.parse(localStorage.getItem('user')).Id;
