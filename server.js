@@ -170,7 +170,7 @@ app.delete('/admindelete', async (req, res) => {
 });
 
 app.put('/update', async (req, res) => {
-  await sql.query(`UPDATE Account SET Email = '${req.body.email}', Password = ${req.body.password}`);
+  await sql.query(`UPDATE Account SET Email = '${req.body.email}', Password = '${req.body.password}' WHERE Email = '${req.body.email}'`);
   res.status(200).send({ success: true });
 });
 
